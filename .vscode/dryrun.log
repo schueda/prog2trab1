@@ -1,0 +1,9 @@
+make --dry-run --keep-going --print-directory
+make: Entering directory `/Users/andreschueda/Faculdade/TerceiroSemestre/programacao2/trabalho1'
+ 
+rm -f directoryParse.o histogram.o *~
+ 
+gcc directoryParse.o histogram.o -Wall -std=c99 main.c -o gps
+ 
+make: Leaving directory `/Users/andreschueda/Faculdade/TerceiroSemestre/programacao2/trabalho1'
+ 
