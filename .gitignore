@@ -54,3 +54,4 @@ dkms.conf
 
 # Arquivos de log
 /log
+.vscode
