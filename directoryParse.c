@@ -3,13 +3,15 @@
 #include <string.h>
 #include <dirent.h>
 #include "directoryParse.h"
+#include "stringUtils.h"
 #define LINE_SIZE 256
 
-char* parseDirectory(char* directoryPath) {
+bikeNode* parseFile(char* filePath);
+
+bikeTree* parseDirectory(char* directoryPath) {
     DIR *dirStream;
     struct dirent *dirEntry;
-    FILE* file;
-    char line[LINE_SIZE+1];
+    
     char filePath[LINE_SIZE+1];
 
     dirStream = opendir(directoryPath);
@@ -18,19 +20,30 @@ char* parseDirectory(char* directoryPath) {
     }
 
     while((dirEntry = readdir(dirStream)) != NULL) {
-        if(dirEntry->d_type == DT_REG) {
+        if(dirEntry->d_type == DT_REG && checkFileExtension(dirEntry->d_name, ".log")) {
             strcpy(filePath, directoryPath);
             strcat(filePath, "/");
             strcat(filePath, dirEntry->d_name);
 
-            file = fopen(filePath, "r");
-
-            printf("%s", fgets(line, LINE_SIZE, file));
-
-            fclose(file);
+            parseFile(filePath);
         }
     }
 
     closedir(dirStream);
     return NULL;
 }
+
+bikeNode* parseFile(char* filePath) {
+    FILE* file;
+    char line[LINE_SIZE+1];
+
+    file = fopen(filePath, "r");
+
+    if(checkLineStart(fgets(line, LINE_SIZE, file), "Gear:")) {
+        printf("%s", &line[6]);
+    }
+
+    fclose(file);
+    return NULL;
+}
+

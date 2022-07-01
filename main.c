@@ -5,11 +5,13 @@
 #include "directoryParse.h"
 
 int main(int argc, char *argv[]){
+    bikeTree *bikes;
+
     int opt;
     while((opt = getopt(argc, argv, "d:")) != -1) {
         switch (opt) {
         case 'd':
-            parseDirectory(optarg);
+            bikes = parseDirectory(optarg);
             break;
         default:
             fprintf(stderr, "Usage: %s [-d] [Directory...]\n", argv[0]);
@@ -17,6 +19,7 @@ int main(int argc, char *argv[]){
         }
     }
     
+
     return 0;
 }
 
