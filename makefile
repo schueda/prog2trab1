@@ -1,6 +1,6 @@
-CFLAGS = -Wall -std=c99
+CFLAGS = -Wall -std=c99 -g
 EXEC_NAME = gps
-OBJS = main.o directoryParse.o histogram.o stringUtils.o
+OBJS = main.o directoryParse.o tree.o histogram.o stringUtils.o
 
 all: clean $(EXEC_NAME) 
 
@@ -11,6 +11,8 @@ $(EXEC_NAME): $(OBJS)
 main.o: main.c
 
 directoryParse.o: directoryParse.c directoryParse.h
+
+tree.o: tree.c tree.h
 
 histogram.o: histogram.h histogram.c
 

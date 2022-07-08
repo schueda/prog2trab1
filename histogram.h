@@ -3,6 +3,6 @@
 
 
 
-char* generateAsciiHistogram();
+char *generateAsciiHistogram();
 
 #endif

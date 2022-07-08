@@ -4,15 +4,20 @@
 #include <dirent.h>
 #include "directoryParse.h"
 #include "stringUtils.h"
+#include "tree.h"
 #define LINE_SIZE 256
 
-bikeNode* parseFile(char* filePath);
+bikeNodeT *parseFile(char *filePath, bikeNodeT *raiz);
+void setActivityDate(activityNodeT *node, char *date);
+void setActivityDist(activityNodeT *node, char *line);
 
-bikeTree* parseDirectory(char* directoryPath) {
+bikeNodeT *parseDirectory(char *directoryPath) {
     DIR *dirStream;
     struct dirent *dirEntry;
     
     char filePath[LINE_SIZE+1];
+
+    bikeNodeT *raizBikes = NULL;
 
     dirStream = opendir(directoryPath);
     if(!dirStream) {
@@ -25,25 +30,80 @@ bikeTree* parseDirectory(char* directoryPath) {
             strcat(filePath, "/");
             strcat(filePath, dirEntry->d_name);
 
-            parseFile(filePath);
+            raizBikes = parseFile(filePath, raizBikes);
         }
     }
 
     closedir(dirStream);
-    return NULL;
+    return raizBikes;
 }
 
-bikeNode* parseFile(char* filePath) {
-    FILE* file;
+bikeNodeT *parseFile(char *filePath, bikeNodeT *raiz) {
+    FILE *file;
     char line[LINE_SIZE+1];
+    char gear[128];
+    bikeNodeT *currentBike = NULL;
+    activityNodeT *currentActivity = NULL;
 
     file = fopen(filePath, "r");
 
     if(checkLineStart(fgets(line, LINE_SIZE, file), "Gear:")) {
-        printf("%s", &line[6]);
+        line[strlen(line) - 1] = '\0';
+        strcpy(gear, &line[6]);
+
+        raiz = insertBikeNode(raiz, gear);
+        currentBike = findBikeNode(raiz, gear);
+
+        currentActivity = createActivityNode();
+
+        while(fgets(line, LINE_SIZE, file) != NULL) {
+            //todo: fazer ser inicial pra diminuir o numero de ifs
+            if(checkLineStart(line, "timestamp")) {
+                if(currentActivity->date == NULL) {
+                    setActivityDate(currentActivity, line);
+                }
+            }
+            //todo: por no final pra precisar dar valor uma unica vez
+            else if(checkLineStart(line, "distance")) {
+                setActivityDist(currentActivity, line);
+            }
+            else if(checkLineStart(line, "")) {
+                
+            }
+            else if(checkLineStart(line, "")) {
+                
+            }
+            else if(checkLineStart(line, "")) {
+                
+            }
+            else if(checkLineStart(line, "")) {
+                
+            }
+            else if(checkLineStart(line, "")) {
+                
+            }
+            else if(checkLineStart(line, "")) {
+                
+            }
+        }
+
+        currentBike->raizDate = insertActivityNodeDate(currentBike->raizDate, currentActivity);
     }
 
     fclose(file);
-    return NULL;
+    return raiz;
 }
 
+void setActivityDate(activityNodeT *node, char *line) {
+    char *date = malloc(sizeof(char)*10);
+    line[21] = '\0';
+    strcpy(date, &line[11]);
+    node->date = date;
+}
+
+void setActivityDist(activityNodeT *node, char *line) {
+    float dist;
+    line[strlen(line)- 2] = '\0';
+    dist = atof(&line[10]);
+    printf("%.2f\n", dist);
+}

@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include "histogram.h"
 
-char* generateAsciiHistogram() {
+char *generateAsciiHistogram() {
     return NULL;
 }
