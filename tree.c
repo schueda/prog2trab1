@@ -10,12 +10,12 @@ bikeNodeT *createBikeNode(char key[]) {
     strcpy(nodeKey, key);
     node->gear = nodeKey;
 
-    node->raizDate = NULL;
-    node->raizDist = NULL;
-    node->raizSubAcum = NULL;
+    node->activityByDateRoot = NULL;
+    node->activityByDistRoot = NULL;
+    node->activityByElevGainRoot = NULL;
 
-    node->filhoEsq = NULL;
-    node->filhoDir = NULL;
+    node->left = NULL;
+    node->right = NULL;
 
     return node;
 }
@@ -26,9 +26,9 @@ bikeNodeT *insertBikeNode(bikeNodeT *node, char key[]) {
     }
     int comp = strcmp(node->gear, key);
     if(comp > 0) {
-        node->filhoEsq = insertBikeNode(node->filhoEsq, key);
+        node->left = insertBikeNode(node->left, key);
     } else if(comp < 0) {
-        node->filhoDir = insertBikeNode(node->filhoDir, key);
+        node->right = insertBikeNode(node->right, key);
     }
     return node;
 }
@@ -37,9 +37,9 @@ void printBikeTree(bikeNodeT *node) {
     if (node == NULL) {
         return;
     }
-    printBikeTree(node->filhoEsq);
+    printBikeTree(node->left);
     printf("%s\n", node->gear);
-    printBikeTree(node->filhoDir);
+    printBikeTree(node->right);
 }
 
 bikeNodeT *findBikeNode(bikeNodeT *node, char key[]) {
@@ -48,9 +48,9 @@ bikeNodeT *findBikeNode(bikeNodeT *node, char key[]) {
     }
     int comp = strcmp(node->gear, key);
     if(comp > 0) {
-        return findBikeNode(node->filhoEsq, key);
+        return findBikeNode(node->left, key);
     } else if(comp < 0) {
-        return findBikeNode(node->filhoDir, key);
+        return findBikeNode(node->right, key);
     }
     return node;
 }
@@ -60,44 +60,60 @@ activityNodeT *createActivityNode() {
 
     node->date = NULL;
 
-    node->dateFilhoDir = NULL;
-    node->dateFilhoEsq = NULL;
+    node->dateLeft = NULL;
+    node->dateRight = NULL;
 
-    node->distFilhoDir = NULL;
-    node->distFilhoEsq = NULL;
+    node->distLeft = NULL;
+    node->distRight = NULL;
 
-    node->subAcumFilhoDir = NULL;
-    node->subAcumFilhoEsq = NULL;
+    node->elevGainLeft = NULL;
+    node->elevGainRight = NULL;
 
     return node;
 }
 
-activityNodeT *insertActivityNodeDate(activityNodeT *raiz, activityNodeT *node) {
-    if(raiz == NULL) {
-        raiz = node;
+activityNodeT *insertActivityNodeDate(activityNodeT *root, activityNodeT *node) {
+    if(root == NULL) {
+        root = node;
     }
-    int comp = strcmp(raiz->date, node->date);
+    int comp = strcmp(root->date, node->date);
     if(comp > 0) {
-        raiz->dateFilhoEsq = insertActivityNodeDate(raiz->dateFilhoEsq, node);
+        root->dateLeft = insertActivityNodeDate(root->dateLeft, node);
     } else if(comp < 0) {
-        raiz->dateFilhoDir = insertActivityNodeDate(raiz->dateFilhoDir, node);
+        root->dateRight = insertActivityNodeDate(root->dateRight, node);
     }
-    return raiz;
+    return root;
 }
 
-activityNodeT *insertActivityNodeDist(activityNodeT *raiz, activityNodeT *node) {
-
+activityNodeT *insertActivityNodeDist(activityNodeT *root, activityNodeT *node) {
+    if(root == NULL) {
+        root = node;
+    }
+    if(root->distance > node->distance) {
+        root->distLeft = insertActivityNodeDist(root->distLeft, node);
+    } else if(root->distance < node->distance) {
+        root->distRight = insertActivityNodeDist(root->distRight, node);
+    }
+    return root;
 }
 
-activityNodeT *insertActivityNodeSubAcum(activityNodeT *raiz, activityNodeT *node) {
-
+activityNodeT *insertActivityNodeSubAcum(activityNodeT *root, activityNodeT *node) {
+    if(root == NULL) {
+        root = node;
+    }
+    if(root->elevGain > node->elevGain) {
+        root->elevGainLeft = insertActivityNodeSubAcum(root->elevGainLeft, node);
+    } else if(root->elevGain < node->elevGain) {
+        root->elevGainRight = insertActivityNodeSubAcum(root->elevGainRight, node);
+    }
+    return root;
 }
 
 void printActivityTreeDate(activityNodeT *node) {
     if (node == NULL) {
         return;
     }
-    printActivityTreeDate(node->dateFilhoEsq);
+    printActivityTreeDate(node->dateLeft);
     printf("%s\n", node->date);
-    printActivityTreeDate(node->dateFilhoDir);
+    printActivityTreeDate(node->dateRight);
 }

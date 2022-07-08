@@ -6,33 +6,33 @@ typedef struct activityNode activityNodeT;
 
 struct bikeNode {
     char *gear;
-    bikeNodeT *filhoEsq;
-    bikeNodeT *filhoDir;
+    bikeNodeT *left;
+    bikeNodeT *right;
 
-    activityNodeT *raizDate;
-    activityNodeT *raizDist;
-    activityNodeT *raizSubAcum;
+    activityNodeT *activityByDateRoot;
+    activityNodeT *activityByDistRoot;
+    activityNodeT *activityByElevGainRoot;
 };
 
 
 struct activityNode {
     char *date;
-    float dist;
+    float distance;
     float veloMed;
     float veloMax;
     float hrMed;
     float hrMax;
     float cadMed;
-    float subAcum;
+    float elevGain;
 
-    activityNodeT *dateFilhoDir;
-    activityNodeT *dateFilhoEsq;
+    activityNodeT *dateRight;
+    activityNodeT *dateLeft;
 
-    activityNodeT *distFilhoDir;
-    activityNodeT *distFilhoEsq;
+    activityNodeT *distRight;
+    activityNodeT *distLeft;
 
-    activityNodeT *subAcumFilhoDir;
-    activityNodeT *subAcumFilhoEsq;
+    activityNodeT *elevGainRight;
+    activityNodeT *elevGainLeft;
 };
 
 bikeNodeT *createBikeNode(char key[]);

@@ -5,16 +5,16 @@
 #include "directoryParse.h"
 
 int main(int argc, char *argv[]){
-    bikeNodeT *raizBikes;
+    bikeNodeT *bikeRoot;
 
     int opt;
     while((opt = getopt(argc, argv, "d:")) != -1) {
         switch (opt) {
         case 'd':
-            raizBikes = parseDirectory(optarg);
+            bikeRoot = parseDirectory(optarg);
 
-            printBikeTree(raizBikes);
-            printActivityTreeDate(raizBikes->raizDate);
+            printBikeTree(bikeRoot);
+            printActivityTreeDate(bikeRoot->activityByDateRoot);
             break;
         default:
             perror("Usage: [-d] [Directory...]\n");

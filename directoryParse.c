@@ -5,11 +5,15 @@
 #include "directoryParse.h"
 #include "stringUtils.h"
 #include "tree.h"
-#define LINE_SIZE 256
+#define LINE_SIZE 128
 
 bikeNodeT *parseFile(char *filePath, bikeNodeT *raiz);
-void setActivityDate(activityNodeT *node, char *date);
-void setActivityDist(activityNodeT *node, char *line);
+char *getDate(char *line);
+float getDistance(char *line);
+float getSpeed(char *line);
+int getHr(char *line);
+int getCadence(char *line);
+float getAltitude(char *line);
 
 bikeNodeT *parseDirectory(char *directoryPath) {
     DIR *dirStream;
@@ -38,12 +42,36 @@ bikeNodeT *parseDirectory(char *directoryPath) {
     return raizBikes;
 }
 
-bikeNodeT *parseFile(char *filePath, bikeNodeT *raiz) {
+bikeNodeT *parseFile(char *filePath, bikeNodeT *bikeRoot) {
     FILE *file;
     char line[LINE_SIZE+1];
-    char gear[128];
-    bikeNodeT *currentBike = NULL;
-    activityNodeT *currentActivity = NULL;
+    char gear[LINE_SIZE];
+    bikeNodeT *bike = NULL;
+    activityNodeT *activity = NULL;
+    
+    int separator;
+    
+    float previousSpeed;
+    float currentSpeed;
+    float maxSpeed;
+    float avgSpeed;
+    float totalDiv;
+
+    int previousHr;
+    int currentHr;
+    float maxHr;
+
+    float previousAltitude;
+    float currentAltitude;
+    float altitudeDiff;
+
+    int previousCad;
+    int currentCad;
+
+    float previousTime;
+    float currentTime;
+    float timeDiff;
+
 
     file = fopen(filePath, "r");
 
@@ -51,59 +79,98 @@ bikeNodeT *parseFile(char *filePath, bikeNodeT *raiz) {
         line[strlen(line) - 1] = '\0';
         strcpy(gear, &line[6]);
 
-        raiz = insertBikeNode(raiz, gear);
-        currentBike = findBikeNode(raiz, gear);
+        bikeRoot = insertBikeNode(bikeRoot, gear);
+        bike = findBikeNode(bikeRoot, gear);
+        activity = createActivityNode();
 
-        currentActivity = createActivityNode();
+        
+        fgets(line, LINE_SIZE, file);
+        while (!checkLineStart(line, "timestamp")){
+            if (checkLineStart(line, "\n")) {
+                separator = ftell(file);
+            }
+
+            fgets(line, LINE_SIZE, file);
+        }
+        activity->date = getDate(line);
+
+        fseek(file, separator, SEEK_SET);
 
         while(fgets(line, LINE_SIZE, file) != NULL) {
-            //todo: fazer ser inicial pra diminuir o numero de ifs
-            if(checkLineStart(line, "timestamp")) {
-                if(currentActivity->date == NULL) {
-                    setActivityDate(currentActivity, line);
+            if(checkLineStart(line, "speed")) {
+                previousSpeed = currentSpeed;
+                currentSpeed = getSpeed(line);
+            }
+            else if(checkLineStart(line, "heart_rate")) {
+                previousHr = currentHr;
+                currentHr = getHr(line);
+            }
+            else if(checkLineStart(line, "cadence")) {
+                previousCad = currentCad;
+                currentCad = getCadence(line);
+            }
+            else if(checkLineStart(line, "altitude")) {
+                previousAltitude = currentAltitude;
+                currentAltitude = getAltitude(line);
+                altitudeDiff = currentAltitude - previousAltitude;
+
+                if (altitudeDiff > 0) {
+                    activity->elevGain += altitudeDiff;
                 }
             }
-            //todo: por no final pra precisar dar valor uma unica vez
-            else if(checkLineStart(line, "distance")) {
-                setActivityDist(currentActivity, line);
+            else if(checkLineStart(line, "timestamp")) {
+                //isso aqui vai ser mais treta, vou deixar pra depois kk
             }
-            else if(checkLineStart(line, "")) {
-                
-            }
-            else if(checkLineStart(line, "")) {
-                
-            }
-            else if(checkLineStart(line, "")) {
-                
-            }
-            else if(checkLineStart(line, "")) {
-                
-            }
-            else if(checkLineStart(line, "")) {
-                
-            }
-            else if(checkLineStart(line, "")) {
-                
+            else if(checkLineStart(line, "\n")) {
+                separator = ftell(file);
             }
         }
 
-        currentBike->raizDate = insertActivityNodeDate(currentBike->raizDate, currentActivity);
+        fseek(file, separator, SEEK_SET);
+
+        fgets(line, LINE_SIZE, file);
+        while(!checkLineStart(line, "distance")) {
+            fgets(line, LINE_SIZE, file);
+        }
+        activity->distance = getDistance(line);
+
+        bike->activityByDateRoot = insertActivityNodeDate(bike->activityByDateRoot, activity);
+        bike->activityByDistRoot = insertActivityNodeDist(bike->activityByDistRoot, activity);
+        bike->activityByElevGainRoot = insertActivityNodeSubAcum(bike->activityByElevGainRoot, activity);
     }
 
     fclose(file);
-    return raiz;
+    return bikeRoot;
 }
 
-void setActivityDate(activityNodeT *node, char *line) {
+char *getDate(char *line) {
     char *date = malloc(sizeof(char)*10);
     line[21] = '\0';
     strcpy(date, &line[11]);
-    node->date = date;
+    return date;
 }
 
-void setActivityDist(activityNodeT *node, char *line) {
-    float dist;
+float getDistance(char *line) {
     line[strlen(line)- 2] = '\0';
-    dist = atof(&line[10]);
-    printf("%.2f\n", dist);
+    return atof(&line[10]);
+}
+
+float getSpeed(char *line) {
+    line[strlen(line)- 4] = '\0';
+    return atof(&line[7]);
+}
+
+int getHr(char *line) {
+    line[strlen(line)- 4] = '\0';
+    return atoi(&line[12]);
+}
+
+int getCadence(char *line) {
+    line[strlen(line)- 4] = '\0';
+    return atoi(&line[9]);
+}
+
+float getAltitude(char *line) {
+    line[strlen(line)- 2] = '\0';
+    return atof(&line[10]);
 }
