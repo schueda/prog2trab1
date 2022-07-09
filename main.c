@@ -13,8 +13,12 @@ int main(int argc, char *argv[]){
         case 'd':
             bikeRoot = parseDirectory(optarg);
 
-            printBikeTree(bikeRoot);
-            printActivityTreeDate(bikeRoot->activityByDateRoot);
+            if (bikeRoot != NULL) {
+                printBikeTree(bikeRoot);
+                printActivityTreeDate(bikeRoot->activityByDateRoot);
+            } else {
+                printf("Nenhum arquivo de log válido foi encontrado nesse diretório.\n");
+            }
             break;
         default:
             perror("Usage: [-d] [Directory...]\n");

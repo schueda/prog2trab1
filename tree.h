@@ -22,7 +22,7 @@ struct activityNode {
     float veloMax;
     float hrMed;
     float hrMax;
-    float cadMed;
+    float avgCadence;
     float elevGain;
 
     activityNodeT *dateRight;

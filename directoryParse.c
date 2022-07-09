@@ -14,6 +14,7 @@ float getSpeed(char *line);
 int getHr(char *line);
 int getCadence(char *line);
 float getAltitude(char *line);
+int getTime(char *line);
 
 bikeNodeT *parseDirectory(char *directoryPath) {
     DIR *dirStream;
@@ -51,26 +52,30 @@ bikeNodeT *parseFile(char *filePath, bikeNodeT *bikeRoot) {
     
     int separator;
     
-    float previousSpeed;
-    float currentSpeed;
+    float previousSpeed = 0;
+    float currentSpeed = 0;
     float maxSpeed;
     float avgSpeed;
-    float totalDiv;
+    int speedDiv;
 
     int previousHr;
     int currentHr;
     float maxHr;
+    float avgHr;
+    int hrDiv;
 
     float previousAltitude;
     float currentAltitude;
-    float altitudeDiff;
 
-    int previousCad;
-    int currentCad;
+    int previousCadence = 0;
+    int currentCadence = 0;
+    float avgCadence;
+    int cadenceDiv;
 
-    float previousTime;
-    float currentTime;
-    float timeDiff;
+    int previousTime;
+    int currentTime;
+
+    float distance;
 
 
     file = fopen(filePath, "r");
@@ -90,9 +95,17 @@ bikeNodeT *parseFile(char *filePath, bikeNodeT *bikeRoot) {
                 separator = ftell(file);
             }
 
+            if(checkLineStart(line, "altitude")) {
+                previousAltitude = getAltitude(line);
+                currentAltitude = getAltitude(line);
+            }
+
             fgets(line, LINE_SIZE, file);
         }
         activity->date = getDate(line);
+
+        previousTime = getTime(line);
+        currentTime = getTime(line);
 
         fseek(file, separator, SEEK_SET);
 
@@ -106,10 +119,11 @@ bikeNodeT *parseFile(char *filePath, bikeNodeT *bikeRoot) {
                 currentHr = getHr(line);
             }
             else if(checkLineStart(line, "cadence")) {
-                previousCad = currentCad;
-                currentCad = getCadence(line);
+                previousCadence = currentCadence;
+                currentCadence = getCadence(line);
             }
             else if(checkLineStart(line, "altitude")) {
+                float altitudeDiff;
                 previousAltitude = currentAltitude;
                 currentAltitude = getAltitude(line);
                 altitudeDiff = currentAltitude - previousAltitude;
@@ -119,20 +133,15 @@ bikeNodeT *parseFile(char *filePath, bikeNodeT *bikeRoot) {
                 }
             }
             else if(checkLineStart(line, "timestamp")) {
-                //isso aqui vai ser mais treta, vou deixar pra depois kk
+                int timeDiff = currentTime - previousTime;
+
+                previousTime = currentTime;
+                currentTime = getTime(line);
             }
-            else if(checkLineStart(line, "\n")) {
-                separator = ftell(file);
+            else if(checkLineStart(line, "distance")) {
+                distance = getDistance(line);
             }
         }
-
-        fseek(file, separator, SEEK_SET);
-
-        fgets(line, LINE_SIZE, file);
-        while(!checkLineStart(line, "distance")) {
-            fgets(line, LINE_SIZE, file);
-        }
-        activity->distance = getDistance(line);
 
         bike->activityByDateRoot = insertActivityNodeDate(bike->activityByDateRoot, activity);
         bike->activityByDistRoot = insertActivityNodeDist(bike->activityByDistRoot, activity);
@@ -144,33 +153,52 @@ bikeNodeT *parseFile(char *filePath, bikeNodeT *bikeRoot) {
 }
 
 char *getDate(char *line) {
+    char lineCopy[strlen(line)];
+    strcpy(lineCopy, line);
+
     char *date = malloc(sizeof(char)*10);
-    line[21] = '\0';
-    strcpy(date, &line[11]);
+    *(strrchr(lineCopy, ' ')) = '\0';
+    strcpy(date, strchr(lineCopy, ' ')+1);
     return date;
 }
 
 float getDistance(char *line) {
-    line[strlen(line)- 2] = '\0';
-    return atof(&line[10]);
+    *(strrchr(line, ' ')) = '\0';
+    return atof(strchr(line, ' ')+1);
 }
 
 float getSpeed(char *line) {
-    line[strlen(line)- 4] = '\0';
-    return atof(&line[7]);
+    *(strrchr(line, ' ')) = '\0';
+    return atof(strchr(line, ' ')+1);
 }
 
 int getHr(char *line) {
-    line[strlen(line)- 4] = '\0';
-    return atoi(&line[12]);
+    *(strrchr(line, ' ')) = '\0';
+    return atoi(strchr(line, ' ')+1);
 }
 
 int getCadence(char *line) {
-    line[strlen(line)- 4] = '\0';
-    return atoi(&line[9]);
+    *(strrchr(line, ' ')) = '\0';
+    return atoi(strchr(line, ' ')+1);
 }
 
 float getAltitude(char *line) {
-    line[strlen(line)- 2] = '\0';
-    return atof(&line[10]);
+    char lineCopy[strlen(line)];
+    strcpy(lineCopy, line);
+
+    *(strrchr(lineCopy, ' ')) = '\0';
+    return atof(strchr(lineCopy, ' ')+1);
+}
+
+int getTime(char *line) {
+    char lineCopy[strlen(line)];
+    strcpy(lineCopy, line);
+
+    lineCopy[strlen(lineCopy)] = '\0';
+    char *arg = strrchr(lineCopy, ' ') + 1;
+    int hours = atoi(arg);
+    int minutes = atoi(strchr(arg, ':')+1);
+    int seconds = atoi(strrchr(lineCopy, ':')+1);
+    return 3600 * hours + 60 * minutes + seconds;
+    return 0;
 }
