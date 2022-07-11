@@ -91,8 +91,8 @@ void printActivity(activityNodeT *node) {
     printf("%.2f km | ", node->distance);
     printf("%.2f km/h | ", node->avgSpeed);
     printf("%.2f km/h | ", node->maxSpeed);
-    printf("%.2f bpm | ", node->avgHr);
-    printf("%.2f bpm | ", node->maxHr);
-    printf("%.2f rpm | ", node->avgCadence);
+    printf("%.0f bpm | ", node->avgHr);
+    printf("%.0f bpm | ", node->maxHr);
+    printf("%.0f rpm | ", node->avgCadence);
     printf("%.2f m\n", node->elevGain);
 }

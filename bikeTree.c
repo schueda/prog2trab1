@@ -52,7 +52,7 @@ void printBikeTree(bikeNodeT *root, int *count) {
         return;
     }
     printBikeTree(root->left, count);
-    printf("%d. %s\n", *count, root->gear);
+    printf("%d-%s\n", *count, root->gear);
     *count += 1;
     printBikeTree(root->right, count);
 }
