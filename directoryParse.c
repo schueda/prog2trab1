@@ -4,7 +4,7 @@
 #include <dirent.h>
 #include "directoryParse.h"
 #include "stringUtils.h"
-#include "tree.h"
+#include "activityTrees.h"
 #define LINE_SIZE 128
 
 bikeNodeT *parseFile(char *filePath, bikeNodeT *raiz);
@@ -29,6 +29,7 @@ bikeNodeT *parseDirectory(char *directoryPath) {
         return NULL;
     }
 
+    printf("Processando arquivos...\n");
     while((dirEntry = readdir(dirStream)) != NULL) {
         if(dirEntry->d_type == DT_REG && checkFileExtension(dirEntry->d_name, ".log")) {
             strcpy(filePath, directoryPath);
@@ -54,23 +55,23 @@ bikeNodeT *parseFile(char *filePath, bikeNodeT *bikeRoot) {
     
     float previousSpeed = 0;
     float currentSpeed = 0;
-    float maxSpeed;
-    float avgSpeed;
-    int speedDiv;
+    float maxSpeed = 0;
+    float sumSpeed = 0;
+    int divSpeed = 0;
 
-    int previousHr;
-    int currentHr;
-    float maxHr;
-    float avgHr;
-    int hrDiv;
+    int previousHr = 0;
+    int currentHr = 0;
+    float maxHr = 0;
+    int sumHr = 0;
+    int divHr = 0;
 
     float previousAltitude;
     float currentAltitude;
 
     int previousCadence = 0;
     int currentCadence = 0;
-    float avgCadence;
-    int cadenceDiv;
+    int sumCadence = 0;
+    int divCadence = 0;
 
     int previousTime;
     int currentTime;
@@ -113,10 +114,18 @@ bikeNodeT *parseFile(char *filePath, bikeNodeT *bikeRoot) {
             if(checkLineStart(line, "speed")) {
                 previousSpeed = currentSpeed;
                 currentSpeed = getSpeed(line);
+
+                if (currentSpeed > maxSpeed) {
+                    maxSpeed = currentSpeed;
+                }
             }
             else if(checkLineStart(line, "heart_rate")) {
                 previousHr = currentHr;
                 currentHr = getHr(line);
+
+                if (currentHr > maxHr) {
+                    maxHr = currentHr;
+                }
             }
             else if(checkLineStart(line, "cadence")) {
                 previousCadence = currentCadence;
@@ -135,6 +144,21 @@ bikeNodeT *parseFile(char *filePath, bikeNodeT *bikeRoot) {
             else if(checkLineStart(line, "timestamp")) {
                 int timeDiff = currentTime - previousTime;
 
+                if(previousCadence > 0) {
+                    sumCadence += timeDiff * previousCadence;
+                    divCadence += timeDiff;
+                }
+
+                if(previousSpeed > 0) {
+                    sumSpeed += timeDiff * previousSpeed;
+                    divSpeed += timeDiff;
+                }
+
+                if (previousHr > 0) {
+                    sumHr += timeDiff * previousHr;
+                    divHr += timeDiff;
+                }
+
                 previousTime = currentTime;
                 currentTime = getTime(line);
             }
@@ -143,9 +167,32 @@ bikeNodeT *parseFile(char *filePath, bikeNodeT *bikeRoot) {
             }
         }
 
+        activity->distance = distance/1000;
+        activity->avgSpeed = sumSpeed/divSpeed * 3.6;
+        activity->maxSpeed = maxSpeed * 3.6;
+        if (divHr != 0) {
+            activity->avgHr = sumHr/divHr;
+        } else {
+            activity->avgHr = 0;
+        }
+        activity->maxHr = maxHr;
+        if (divCadence != 0) {
+            activity->avgCadence = sumCadence/divCadence;
+        } else {
+            activity->avgCadence = 0;
+        }
+        // printf("%s | ", activity->date);
+        // printf("%.2f km | ", activity->distance);
+        // printf("%.2f km/h | ", activity->avgSpeed);
+        // printf("%.2f km/h | ", activity->maxSpeed);
+        // printf("%.0f bpm | ", activity->avgHr);
+        // printf("%.0f bpm | ", activity->maxHr);
+        // printf("%.0f rpm | ", activity->avgCadence);
+        // printf("%.2f m\n", activity->elevGain);
+
         bike->activityByDateRoot = insertActivityNodeDate(bike->activityByDateRoot, activity);
         bike->activityByDistRoot = insertActivityNodeDist(bike->activityByDistRoot, activity);
-        bike->activityByElevGainRoot = insertActivityNodeSubAcum(bike->activityByElevGainRoot, activity);
+        bike->activityByElevGainRoot = insertActivityNodeElevGain(bike->activityByElevGainRoot, activity);
     }
 
     fclose(file);

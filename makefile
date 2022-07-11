@@ -1,6 +1,6 @@
 CFLAGS = -Wall -std=c99 -g
 EXEC_NAME = gps
-OBJS = main.o directoryParse.o tree.o histogram.o stringUtils.o
+OBJS = main.o directoryParse.o activityTrees.o bikeTree.o histogram.o stringUtils.o
 
 all: clean $(EXEC_NAME) 
 
@@ -12,7 +12,9 @@ main.o: main.c
 
 directoryParse.o: directoryParse.c directoryParse.h
 
-tree.o: tree.c tree.h
+bikeTree.o: bikeTree.c bikeTree.h
+
+activityTrees.o: activityTrees.c activityTrees.h
 
 histogram.o: histogram.h histogram.c
 

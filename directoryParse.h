@@ -1,7 +1,7 @@
 #ifndef __DIRECTORY_PARSE__
 #define __DIRECTORY_PARSE__
 
-#include "tree.h"
+#include "bikeTree.h"
 
 bikeNodeT *parseDirectory(char *directoryPath);
 
