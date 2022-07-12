@@ -5,7 +5,7 @@
 
 void countDistancesFromTree(activityNodeT *root, int *levels, int BottomLevel);
 
-char *generateAsciiHistogram(activityNodeT *root) {
+void printAsciiHistogram(activityNodeT *root) {
     int i, j;
     int min = (int) getMinDistance(root);
     int max = (int) getMaxDistance(root);
@@ -34,7 +34,7 @@ char *generateAsciiHistogram(activityNodeT *root) {
     printf("         0123456789#123456789#123456789#\n");
     printf("Distância|          Quantidade\n");
 
-    return NULL;
+    free(levels);
 }
 
 void countDistancesFromTree(activityNodeT *root, int *levels, int bottomLevel) {

@@ -71,7 +71,7 @@ int main(int argc, char *argv[]){
                         bikeName[strlen(bikeName)-1] = '\0';
                         selectedBike = findBikeNode(bikeRoot, bikeName);
                         if (selectedBike != NULL) {
-                            generateAsciiHistogram(selectedBike->activityByDistRoot);
+                            printAsciiHistogram(selectedBike->activityByDistRoot);
                         } else {
                             printf("Bicicleta não encontrada!");
                         }
