@@ -7,7 +7,7 @@
 #include "activityTrees.h"
 #define LINE_SIZE 128
 
-bikeNodeT *parseFile(char *filePath, bikeNodeT *raiz);
+bikeNodeT *parseFile(char *filePath, bikeNodeT *bikeRoot, activityNodeT *elevGainRoot);
 
 bikeNodeT *parseDirectory(char *directoryPath) {
     DIR *dirStream;
@@ -15,7 +15,8 @@ bikeNodeT *parseDirectory(char *directoryPath) {
     
     char filePath[LINE_SIZE+1];
 
-    bikeNodeT *raizBikes = NULL;
+    bikeNodeT *bikesRoot = NULL;
+    activityNodeT *elevGainRoot = NULL;
 
     dirStream = opendir(directoryPath);
     if(!dirStream) {
@@ -29,15 +30,17 @@ bikeNodeT *parseDirectory(char *directoryPath) {
             strcat(filePath, "/");
             strcat(filePath, dirEntry->d_name);
 
-            raizBikes = parseFile(filePath, raizBikes);
+            bikesRoot = parseFile(filePath, bikesRoot, elevGainRoot);
+            elevGainRoot = bikesRoot->activityByElevGainRoot;
         }
     }
+    summarizeBikes(bikesRoot);
 
     closedir(dirStream);
-    return raizBikes;
+    return bikesRoot;
 }
 
-bikeNodeT *parseFile(char *filePath, bikeNodeT *bikeRoot) {
+bikeNodeT *parseFile(char *filePath, bikeNodeT *bikeRoot, activityNodeT *elevGainRoot) {
     FILE *file;
     char line[LINE_SIZE+1];
     char gear[LINE_SIZE];
@@ -177,7 +180,8 @@ bikeNodeT *parseFile(char *filePath, bikeNodeT *bikeRoot) {
 
         bike->activityByDateRoot = insertActivityNodeDate(bike->activityByDateRoot, activity);
         bike->activityByDistRoot = insertActivityNodeDist(bike->activityByDistRoot, activity);
-        bike->activityByElevGainRoot = insertActivityNodeElevGain(bike->activityByElevGainRoot, activity);
+        elevGainRoot = insertActivityNodeElevGain(elevGainRoot, activity);
+        bike->activityByElevGainRoot = elevGainRoot;
     }
 
     fclose(file);

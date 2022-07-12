@@ -101,6 +101,14 @@ void printActivity(activityNodeT *node) {
     printf("%.2f m\n", node->elevGain);
 }
 
+void countActivities(activityNodeT *root, int *count) {
+    if (root == NULL) {
+        return;
+    }
+    countActivities(root->distLeft, count);
+    *count += 1;
+    countActivities(root->distRight, count);
+}
 
 float getMinDistance(activityNodeT *root) {
     if (root->distLeft != NULL) {
@@ -114,6 +122,15 @@ float getMaxDistance(activityNodeT *root) {
         return getMaxDistance(root->distRight);
     }
     return root->distance;
+}
+
+void getTotalDistance(activityNodeT *root, float *totalDistance) {
+     if (root == NULL) {
+        return;
+    }
+    getTotalDistance(root->distLeft, totalDistance);
+    *totalDistance += root->distance;
+    getTotalDistance(root->distRight, totalDistance);
 }
 
 void destroyActivityTree(activityNodeT *root) {

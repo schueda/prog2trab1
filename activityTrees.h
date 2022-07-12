@@ -25,16 +25,19 @@ struct activityNode {
 
 activityNodeT *createActivityNode();
 
-activityNodeT *insertActivityNodeDate(activityNodeT *raiz, activityNodeT *node);
-activityNodeT *insertActivityNodeDist(activityNodeT *raiz, activityNodeT *node);
-activityNodeT *insertActivityNodeElevGain(activityNodeT *raiz, activityNodeT *node);
+activityNodeT *insertActivityNodeDate(activityNodeT *root, activityNodeT *node);
+activityNodeT *insertActivityNodeDist(activityNodeT *root, activityNodeT *node);
+activityNodeT *insertActivityNodeElevGain(activityNodeT *root, activityNodeT *node);
 
 void printActivityTreeDate(activityNodeT *node);
 void printActivityTreeDist(activityNodeT *root);
 void printActivityTreeElevGain(activityNodeT *root);
 
+void countActivities(activityNodeT *root, int *count);
 float getMinDistance(activityNodeT *root);
 float getMaxDistance(activityNodeT *root);
+void getTotalDistance(activityNodeT *root, float *totalDistance);
+
 
 void destroyActivityTree(activityNodeT *root);
 
