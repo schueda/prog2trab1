@@ -47,6 +47,11 @@ int main(int argc, char *argv[]){
                         selectedBike = findBikeNode(bikeRoot, bikeName);
                         if (selectedBike != NULL) {
                             printActivityTreeDate(selectedBike->activityByDateRoot);
+                            printf("Quantidade: %d\n", selectedBike->activityCount);
+                            printf("Distância total: %.2f km\n", selectedBike->totalDistance);
+                            printf("Menor distância: %.2f km\n", selectedBike->minDistance);
+                            printf("Maior distância: %.2f km\n", selectedBike->maxDistance);
+                            printf("Distância média: %.2f km\n", selectedBike->avgDistance);
                         } else {
                             printf("Bicicleta não encontrada!");
                         }
