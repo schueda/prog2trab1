@@ -1,4 +1,4 @@
-CFLAGS = -Wall -std=c99 -g
+CFLAGS = -Wall -std=c99 -D_DEFAULT_SOURCE
 EXEC_NAME = gps
 OBJS = main.o directoryParse.o activityTrees.o bikeTree.o histogram.o stringUtils.o
 

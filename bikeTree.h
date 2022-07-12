@@ -23,4 +23,6 @@ void printBikesActivitiesDate(bikeNodeT *root);
 void printBikesActivitiesDist(bikeNodeT *root);
 void printBikesActivitiesElevGain(bikeNodeT *root);
 
+void destroyBikeTree(bikeNodeT *root);
+
 #endif

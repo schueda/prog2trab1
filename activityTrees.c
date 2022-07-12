@@ -1,6 +1,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "stringUtils.h"
 #include "activityTrees.h"
 
 void printActivity(activityNodeT *node);
@@ -87,7 +88,10 @@ void printActivityTreeElevGain(activityNodeT *root) {
 }
 
 void printActivity(activityNodeT *node) {
-    printf("%s | ", node->date);
+    char *formattedDate = formatDate(node->date);
+    printf("%s | ", formattedDate);
+    free(formattedDate);
+
     printf("%.2f km | ", node->distance);
     printf("%.2f km/h | ", node->avgSpeed);
     printf("%.2f km/h | ", node->maxSpeed);
@@ -95,4 +99,29 @@ void printActivity(activityNodeT *node) {
     printf("%.0f bpm | ", node->maxHr);
     printf("%.0f rpm | ", node->avgCadence);
     printf("%.2f m\n", node->elevGain);
+}
+
+
+float getMinDistance(activityNodeT *root) {
+    if (root->distLeft != NULL) {
+        return getMinDistance(root->distLeft);
+    }
+    return root->distance;
+}
+
+float getMaxDistance(activityNodeT *root) {
+    if (root->distRight != NULL) {
+        return getMaxDistance(root->distRight);
+    }
+    return root->distance;
+}
+
+void destroyActivityTree(activityNodeT *root) {
+    if (root == NULL) {
+        return;
+    }
+    destroyActivityTree(root->dateLeft);
+    destroyActivityTree(root->dateRight);
+    free(root->date);
+    free(root);
 }

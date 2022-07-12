@@ -61,11 +61,22 @@ int main(int argc, char *argv[]){
                         printBikesActivitiesElevGain(bikeRoot);
                         break;
                     case 6:
+                        printf("Informe a bicicleta: ");
+                        fgets(bikeName, SIZE, stdin);
+                        bikeName[strlen(bikeName)-1] = '\0';
+                        selectedBike = findBikeNode(bikeRoot, bikeName);
+                        if (selectedBike != NULL) {
+                            generateAsciiHistogram(selectedBike->activityByDistRoot);
+                        } else {
+                            printf("Bicicleta não encontrada!");
+                        }
                         break;
                     case 0:
+                        printf("Liberando memória...\n");
+                        destroyBikeTree(bikeRoot);
                         break;
                     default:
-                        printf("comando inválido");
+                        printf("comando inválido\n");
                         break;
                     }
                 }

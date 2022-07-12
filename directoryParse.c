@@ -8,13 +8,6 @@
 #define LINE_SIZE 128
 
 bikeNodeT *parseFile(char *filePath, bikeNodeT *raiz);
-char *getDate(char *line);
-float getDistance(char *line);
-float getSpeed(char *line);
-int getHr(char *line);
-int getCadence(char *line);
-float getAltitude(char *line);
-int getTime(char *line);
 
 bikeNodeT *parseDirectory(char *directoryPath) {
     DIR *dirStream;
@@ -181,14 +174,6 @@ bikeNodeT *parseFile(char *filePath, bikeNodeT *bikeRoot) {
         } else {
             activity->avgCadence = 0;
         }
-        // printf("%s | ", activity->date);
-        // printf("%.2f km | ", activity->distance);
-        // printf("%.2f km/h | ", activity->avgSpeed);
-        // printf("%.2f km/h | ", activity->maxSpeed);
-        // printf("%.0f bpm | ", activity->avgHr);
-        // printf("%.0f bpm | ", activity->maxHr);
-        // printf("%.0f rpm | ", activity->avgCadence);
-        // printf("%.2f m\n", activity->elevGain);
 
         bike->activityByDateRoot = insertActivityNodeDate(bike->activityByDateRoot, activity);
         bike->activityByDistRoot = insertActivityNodeDist(bike->activityByDistRoot, activity);
@@ -197,55 +182,4 @@ bikeNodeT *parseFile(char *filePath, bikeNodeT *bikeRoot) {
 
     fclose(file);
     return bikeRoot;
-}
-
-char *getDate(char *line) {
-    char lineCopy[strlen(line)];
-    strcpy(lineCopy, line);
-
-    char *date = malloc(sizeof(char)*10);
-    *(strrchr(lineCopy, ' ')) = '\0';
-    strcpy(date, strchr(lineCopy, ' ')+1);
-    return date;
-}
-
-float getDistance(char *line) {
-    *(strrchr(line, ' ')) = '\0';
-    return atof(strchr(line, ' ')+1);
-}
-
-float getSpeed(char *line) {
-    *(strrchr(line, ' ')) = '\0';
-    return atof(strchr(line, ' ')+1);
-}
-
-int getHr(char *line) {
-    *(strrchr(line, ' ')) = '\0';
-    return atoi(strchr(line, ' ')+1);
-}
-
-int getCadence(char *line) {
-    *(strrchr(line, ' ')) = '\0';
-    return atoi(strchr(line, ' ')+1);
-}
-
-float getAltitude(char *line) {
-    char lineCopy[strlen(line)];
-    strcpy(lineCopy, line);
-
-    *(strrchr(lineCopy, ' ')) = '\0';
-    return atof(strchr(lineCopy, ' ')+1);
-}
-
-int getTime(char *line) {
-    char lineCopy[strlen(line)];
-    strcpy(lineCopy, line);
-
-    lineCopy[strlen(lineCopy)] = '\0';
-    char *arg = strrchr(lineCopy, ' ') + 1;
-    int hours = atoi(arg);
-    int minutes = atoi(strchr(arg, ':')+1);
-    int seconds = atoi(strrchr(lineCopy, ':')+1);
-    return 3600 * hours + 60 * minutes + seconds;
-    return 0;
 }

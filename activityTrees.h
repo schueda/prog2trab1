@@ -33,4 +33,9 @@ void printActivityTreeDate(activityNodeT *node);
 void printActivityTreeDist(activityNodeT *root);
 void printActivityTreeElevGain(activityNodeT *root);
 
+float getMinDistance(activityNodeT *root);
+float getMaxDistance(activityNodeT *root);
+
+void destroyActivityTree(activityNodeT *root);
+
 #endif

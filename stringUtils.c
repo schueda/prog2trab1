@@ -1,4 +1,5 @@
 #include <string.h>
+#include <stdlib.h>
 #include "stringUtils.h"
 
 int checkFileExtension(char fileName[], char extension[]) {
@@ -64,4 +65,73 @@ int isSubstring(char string[], char subString[]) {
     }
 
     return -1;
+}
+
+char *getDate(char *line) {
+    char lineCopy[strlen(line)];
+    strcpy(lineCopy, line);
+
+    char *date = malloc(sizeof(char)*10);
+    *(strrchr(lineCopy, ' ')) = '\0';
+    strcpy(date, strchr(lineCopy, ' ')+1);
+    return date;
+}
+
+float getDistance(char *line) {
+    *(strrchr(line, ' ')) = '\0';
+    return atof(strchr(line, ' ')+1);
+}
+
+float getSpeed(char *line) {
+    *(strrchr(line, ' ')) = '\0';
+    return atof(strchr(line, ' ')+1);
+}
+
+int getHr(char *line) {
+    *(strrchr(line, ' ')) = '\0';
+    return atoi(strchr(line, ' ')+1);
+}
+
+int getCadence(char *line) {
+    *(strrchr(line, ' ')) = '\0';
+    return atoi(strchr(line, ' ')+1);
+}
+
+float getAltitude(char *line) {
+    char lineCopy[strlen(line)];
+    strcpy(lineCopy, line);
+
+    *(strrchr(lineCopy, ' ')) = '\0';
+    return atof(strchr(lineCopy, ' ')+1);
+}
+
+int getTime(char *line) {
+    char lineCopy[strlen(line)];
+    strcpy(lineCopy, line);
+
+    lineCopy[strlen(lineCopy)] = '\0';
+    char *arg = strrchr(lineCopy, ' ') + 1;
+    int hours = atoi(arg);
+    int minutes = atoi(strchr(arg, ':')+1);
+    int seconds = atoi(strrchr(lineCopy, ':')+1);
+    return 3600 * hours + 60 * minutes + seconds;
+    return 0;
+}
+
+char *formatDate(char *date) {
+    char *formattedDate = malloc(sizeof(char)*11);
+
+    formattedDate[0] = date[8];
+    formattedDate[1] = date[9];
+    formattedDate[2] = '/';
+    formattedDate[3] = date[5];
+    formattedDate[4] = date[6];
+    formattedDate[5] = '/';
+    formattedDate[6] = date[0];
+    formattedDate[7] = date[1];
+    formattedDate[8] = date[2];
+    formattedDate[9] = date[3];
+    formattedDate[10] = '\0';
+
+    return formattedDate;
 }

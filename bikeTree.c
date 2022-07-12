@@ -63,6 +63,7 @@ void printBikesActivitiesDate(bikeNodeT *root) {
     }
     printBikesActivitiesDate(root->left);
     printf("%s\n", root->gear);
+    printf("   data    |distância |  velo med  |  velo max  | hr med  | hr max  |cadencia| ganho de elevação\n");
     printActivityTreeDate(root->activityByDateRoot);
     printf("\n\n");
     printBikesActivitiesDate(root->right);
@@ -74,6 +75,7 @@ void printBikesActivitiesDist(bikeNodeT *root) {
     }
     printBikesActivitiesDist(root->left);
     printf("%s\n", root->gear);
+    printf("   data    |distância |  velo med  |  velo max  | hr med  | hr max  |cadencia| ganho de elevação\n");
     printActivityTreeDist(root->activityByDistRoot);
     printf("\n\n");
     printBikesActivitiesDist(root->right);
@@ -85,7 +87,19 @@ void printBikesActivitiesElevGain(bikeNodeT *root) {
     }
     printBikesActivitiesElevGain(root->left);
     printf("%s\n", root->gear);
+    printf("   data    |distância |  velo med  |  velo max  | hr med  | hr max  |cadencia| ganho de elevação\n");
     printActivityTreeElevGain(root->activityByElevGainRoot);
     printf("\n\n");
     printBikesActivitiesElevGain(root->right);
+}
+
+void destroyBikeTree(bikeNodeT *root) {
+    if (root == NULL) {
+        return;
+    }
+    destroyBikeTree(root->left);
+    destroyBikeTree(root->right);
+    free(root->gear);
+    destroyActivityTree(root->activityByDateRoot);
+    free(root);
 }

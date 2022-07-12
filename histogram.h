@@ -1,8 +1,8 @@
 #ifndef __HISTOGRAM__
 #define __HISTOGRAM__
 
+#include "activityTrees.h"
 
-
-char *generateAsciiHistogram();
+char *generateAsciiHistogram(activityNodeT *root);
 
 #endif
