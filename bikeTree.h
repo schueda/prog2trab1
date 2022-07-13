@@ -28,6 +28,7 @@ bikeNodeT *findBikeNode(bikeNodeT *root, char key[]);
 
 void summarizeBikes(bikeNodeT *root);
 void printBikeTree(bikeNodeT *root, int *count);
+void printBikeActivities(bikeNodeT *bike);
 void printBikesActivitiesDate(bikeNodeT *root);
 void printBikesActivitiesDist(bikeNodeT *root);
 void printBikesActivitiesElevGain(bikeNodeT *root);

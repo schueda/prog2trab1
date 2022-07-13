@@ -4,6 +4,9 @@
 #include "activityTrees.h"
 #include "bikeTree.h"
 
+void printBikeSummary(bikeNodeT *bike);
+void printHeader();
+
 bikeNodeT *createBikeNode(char key[]) {
     bikeNodeT *node = malloc(sizeof(bikeNodeT));
 
@@ -73,19 +76,20 @@ void printBikeTree(bikeNodeT *root, int *count) {
     printBikeTree(root->right, count);
 }
 
+void printBikeActivities(bikeNodeT *bike) {
+    printActivityTreeDate(bike->activityByDateRoot);
+    printBikeSummary(bike);
+}
+
 void printBikesActivitiesDate(bikeNodeT *root) {
     if(root == NULL) {
         return;
     }
     printBikesActivitiesDate(root->left);
     printf("%s\n", root->gear);
-    printf("   data    |distância |  velo med  |  velo max  | hr med  | hr max  |cadencia| ganho de elevação\n");
+    printHeader();
     printActivityTreeDate(root->activityByDateRoot);
-    printf("Quantidade: %d\n", root->activityCount);
-    printf("Distância total: %.2f km\n", root->totalDistance);
-    printf("Menor distância: %.2f km\n", root->minDistance);
-    printf("Maior distância: %.2f km\n", root->maxDistance);
-    printf("Distância média: %.2f km\n", root->avgDistance);
+    printBikeSummary(root);
     printf("\n\n");
     printBikesActivitiesDate(root->right);
 }
@@ -96,22 +100,30 @@ void printBikesActivitiesDist(bikeNodeT *root) {
     }
     printBikesActivitiesDist(root->left);
     printf("%s\n", root->gear);
-    printf("   data    |distância |  velo med  |  velo max  | hr med  | hr max  |cadencia| ganho de elevação\n");
+    printHeader();
     printActivityTreeDist(root->activityByDistRoot);
-    printf("Quantidade: %d\n", root->activityCount);
-    printf("Distância total: %.2f km\n", root->totalDistance);
-    printf("Menor distância: %.2f km\n", root->minDistance);
-    printf("Maior distância: %.2f km\n", root->maxDistance);
-    printf("Distância média: %.2f km\n", root->avgDistance);
+    printBikeSummary(root);
     printf("\n\n");
     printBikesActivitiesDist(root->right);
+}
+
+void printBikeSummary(bikeNodeT *bike) {
+    printf("Quantidade: %d\n", bike->activityCount);
+    printf("Distância total: %.2f km\n", bike->totalDistance);
+    printf("Menor distância: %.2f km\n", bike->minDistance);
+    printf("Maior distância: %.2f km\n", bike->maxDistance);
+    printf("Distância média: %.2f km\n", bike->avgDistance);
+}
+
+void printHeader() {
+    printf("   data    |distância |  velo med  |  velo max  | hr med  | hr max  |cadencia| ganho de elevação\n");
 }
 
 void printBikesActivitiesElevGain(bikeNodeT *root) {
     if(root == NULL) {
         return;
     }
-    printf("   data    |distância |  velo med  |  velo max  | hr med  | hr max  |cadencia| ganho de elevação\n");
+    printHeader();
     printActivityTreeElevGain(root->activityByElevGainRoot);
     printf("\n\n");
 }

@@ -42,6 +42,6 @@ void countDistancesFromTree(activityNodeT *root, int *levels, int bottomLevel) {
         return;
     }
     countDistancesFromTree(root->distLeft, levels, bottomLevel);
-    levels[(int) root->distance / 10 - (bottomLevel/10)] += 1;
+    levels[(int) (root->distance - bottomLevel)/10] += 1;
     countDistancesFromTree(root->distRight, levels, bottomLevel);
 }
