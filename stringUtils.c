@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "stringUtils.h"
 
+// Verifica se o nome de um arquivo possui a extensão de arquivo especificada.
 int checkFileExtension(char fileName[], char extension[]) {
     int i, j=0;
     int nameSize = strlen(fileName);
@@ -21,6 +22,7 @@ int checkFileExtension(char fileName[], char extension[]) {
     return 1;
 }
 
+// Verifica se a linha inicia da forma especificada.
 int checkLineStart(char line[], char start[]) {
     int i, j=0;
     int lineSize = strlen(line);
@@ -40,33 +42,7 @@ int checkLineStart(char line[], char start[]) {
     return 1;
 }
 
-int isSubstring(char string[], char subString[]) {
-    int i, j;
-    int valid = 1;
-    int stringSize = strlen(string);
-    int subStringSize = strlen(subString);
-
-    if((stringSize == 0) || (subStringSize == 0)) {
-        return -2;
-    }
-
-    for(i=0; i<=(stringSize-subStringSize); i++) {
-        if(string[i] == string[0]) {
-            for (j=1; j<subStringSize && valid; j++) {
-                if (string[i+j] != subString[j]) {
-                    valid = 0;
-                }
-            }
-            if (valid) {
-                return i;
-            }
-            valid = 1;
-        }
-    }
-
-    return -1;
-}
-
+// Extrai a data de uma linha.
 char *getDate(char *line) {
     char lineCopy[strlen(line)];
     strcpy(lineCopy, line);
@@ -77,26 +53,31 @@ char *getDate(char *line) {
     return date;
 }
 
+// Extrai a distância de uma linha.
 float getDistance(char *line) {
     *(strrchr(line, ' ')) = '\0';
     return atof(strchr(line, ' ')+1);
 }
 
+// Extrai a velocidade de uma linha.
 float getSpeed(char *line) {
     *(strrchr(line, ' ')) = '\0';
     return atof(strchr(line, ' ')+1);
 }
 
+// Extrai o heart rate de uma linha.
 int getHr(char *line) {
     *(strrchr(line, ' ')) = '\0';
     return atoi(strchr(line, ' ')+1);
 }
 
+// Extrai a cadência de uma linha.
 int getCadence(char *line) {
     *(strrchr(line, ' ')) = '\0';
     return atoi(strchr(line, ' ')+1);
 }
 
+// Extrai a altitude de uma linha.
 float getAltitude(char *line) {
     char lineCopy[strlen(line)];
     strcpy(lineCopy, line);
@@ -105,6 +86,7 @@ float getAltitude(char *line) {
     return atof(strchr(lineCopy, ' ')+1);
 }
 
+// Extrai o tempo de uma linha.
 int getTime(char *line) {
     char lineCopy[strlen(line)];
     strcpy(lineCopy, line);
@@ -118,6 +100,7 @@ int getTime(char *line) {
     return 0;
 }
 
+// Formata a data para uma forma habitual.
 char *formatDate(char *date) {
     char *formattedDate = malloc(sizeof(char)*11);
 

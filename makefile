@@ -21,7 +21,7 @@ histogram.o: histogram.h histogram.c
 stringUtils.o: stringUtils.c stringUtils.h
 
 clean:
-	-rm -f $(OBJS) *~
+	rm -f $(OBJS) *~
 
 purge: clean
-	-rm -f $(EXEC_NAME)
+	rm -f $(EXEC_NAME)

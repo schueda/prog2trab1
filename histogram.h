@@ -3,6 +3,6 @@
 
 #include "activityTrees.h"
 
-void printAsciiHistogram(activityNodeT *root);
+void printAsciiHistogram(activityNodeT *root); // Gera o histograma em ascii.
 
 #endif
