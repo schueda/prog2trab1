@@ -2,7 +2,7 @@ CFLAGS = -Wall -std=c99 -D_DEFAULT_SOURCE
 EXEC_NAME = gps
 OBJS = main.o directoryParse.o activityTrees.o bikeTree.o histogram.o stringUtils.o
 
-all: clean $(EXEC_NAME) 
+all: $(EXEC_NAME) 
 
 $(EXEC_NAME): $(OBJS)
 	gcc $(OBJS) $(CFLAGS) -o $(EXEC_NAME)
